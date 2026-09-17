@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.DS_Store
+Thumbs.db
+.env
+.env.*
+auth.json
+config.toml
+*.sqlite*
+*.log
+backups/
+skill-backups/
+local-audit/
+dist/
