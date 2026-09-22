@@ -1,0 +1,20 @@
+{
+  "defaults": {
+    "model": "gpt-6-astra",
+    "model_reasoning_effort": "high",
+    "model_verbosity": "low",
+    "personality": "pragmatic",
+    "web_search": "live",
+    "service_tier": "default"
+  },
+  "windows_environment": {
+    "PYTHONUTF8": "1",
+    "PYTHONIOENCODING": "utf-8"
+  },
+  "profiles": {
+    "astra-quick": {"model": "gpt-6-astra", "model_reasoning_effort": "low"},
+    "astra-balanced": {"model": "gpt-6-astra", "model_reasoning_effort": "medium"},
+    "astra-deep": {"model": "gpt-6-astra", "model_reasoning_effort": "xhigh"},
+    "astra-max": {"model": "gpt-6-astra", "model_reasoning_effort": "max"}
+  }
+}

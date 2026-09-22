@@ -1,0 +1,6 @@
+interface:
+  display_name: "Codex Limit Guard"
+  short_description: "Сохранение и продолжение работы при лимитах"
+  default_prompt: "Используй $codex-limit-guard для контроля лимитов, сохранения текущей работы и её возобновления после восстановления квоты."
+policy:
+  allow_implicit_invocation: true

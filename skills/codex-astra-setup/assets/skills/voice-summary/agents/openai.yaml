@@ -1,0 +1,4 @@
+interface:
+  display_name: "Voice Summary"
+  short_description: "Выжимки и транскрипции голосовых сообщений и аудио."
+  default_prompt: "Используй $voice-summary, чтобы получить выжимку или ТЗ из предоставленного аудио либо расшифровки."

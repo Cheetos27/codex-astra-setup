@@ -1,0 +1,19 @@
+{
+  "repository": "https://github.com/howdeploy/kisa-stack",
+  "revision": "63c6f6b6e1a74c040c9fffe8fcad305ce555fe55",
+  "path": "skills/css-graphics",
+  "adapted_for": "Codex on Windows",
+  "date": "2026-09-22",
+  "modified_files": [
+    "SKILL.md",
+    "agents/openai.yaml",
+    "scripts/render.js"
+  ],
+  "upstream_sha256": {
+    "SKILL.md": "6054a970026d3ff5771a9e6bac00f77f6e7bf29b73ec2e7ad199d3a7070ea467",
+    "agents/openai.yaml": "7c5c9571293f26997d5c05fc00ccea54414e268efd020e185a7d5d78d2772fb3",
+    "references/css-techniques.md": "175f77458687a72b99b6915f290d2658b6baa77da60d350c1d2810e895939514",
+    "scripts/render.js": "366af037afe97610003e86080b978566251e3ab3b83c94facfbe63ef8fe26afc",
+    "scripts/setup.sh": "7c96952b1fc78a794b076415724295e742456c6b03ff4c4ad4b9b607c2e4f934"
+  }
+}

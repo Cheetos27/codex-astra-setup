@@ -1,0 +1,22 @@
+{
+  "repository": "https://github.com/howdeploy/kisa-stack",
+  "revision": "63c6f6b6e1a74c040c9fffe8fcad305ce555fe55",
+  "path": "skills/researcher",
+  "adapted_for": "Codex on Windows",
+  "date": "2026-09-22",
+  "modified_files": [
+    "SKILL.md",
+    "agents/openai.yaml"
+  ],
+  "upstream_sha256": {
+    "SKILL.md": "9e2821b14053b4495eca0c8ad881528be4ef08849f7e6aff99f00f6277e286e0",
+    "agents/openai.yaml": "e626a3c19d92955f787aee50dadc1318f687f9a40b25567c14879eae52ccb4d6",
+    "references/anima-lora-feasibility.md": "af3e16c3081037498a457d643a8f57088c9215401c6bce3d55eb7d7dfed5c41b",
+    "references/anthropic-claude-code-policy-billing.md": "993eb9e31f8572419fb7590e1473df61867652500cf8a9a9f3c9bf3c4274b16d",
+    "references/ghostty-practical-notes.md": "878623ba7b7af05e99bc4aa72ca0500c2d21cf40a744b10d3166ac92b40600e3",
+    "references/github-compromise-triage.md": "13cd077bd2326021c6256d84bbda8ccd9f88786d340748a0dabda90bab5b6fe5",
+    "references/gsd-rug-sources.md": "de76534668faa2186a44252c6ca18f24ed42edfa6351f516f0de2e16a5e1bb6a",
+    "references/telegram-bot-to-bot-communication.md": "79586556aaed8ff97a8ad7d3af793c5d7ff0f33d84e8e90c3420a3384bf92b91",
+    "references/telegram-checklists-capability-layering.md": "3575bcab5d16b593a21e52d639dc462ebb3f78d57223fba7116698b7d8c53296"
+  }
+}

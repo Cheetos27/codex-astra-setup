@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "bundled_skills": [
+    "researcher",
+    "voice-summary",
+    "css-graphics",
+    "pizdec",
+    "codex-limit-guard"
+  ],
+  "external_skills": [
+    {
+      "name": "zaebal",
+      "repository": "howdeploy/Z.A.E.B.A.L",
+      "revision": "ea5e18fb2c5b8ec700fb4ad36bad5f91bd8c269d",
+      "path": "skills/zaebal",
+      "files": {
+        "SKILL.md": "7e0d8336bb76897a97120bf5b8db9ab9302487034200591041b12629ee63e4ce",
+        "references/audit-playbooks.md": "507617a2dc53936b28dc9008298d28b4870ee780e114e87eb846da53fbc13aa6",
+        "references/install-linux.md": "2c5fc5871d9a278c4cf9ff2e77a42d977a5a3191a4bcdcaeef1dc40ffe8752ab",
+        "references/install-windows.md": "f3339f8bde772afa086c2b34f71e571f46f42ae41627aa6234051f1db8a763d4"
+      }
+    }
+  ],
+  "excluded": [
+    "local-wiki",
+    "Obsidian",
+    "knowledge",
+    "accounts",
+    "secrets",
+    "automation-state",
+    "hooks"
+  ]
+}

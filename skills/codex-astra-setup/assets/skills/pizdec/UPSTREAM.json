@@ -1,0 +1,21 @@
+{
+  "repository": "https://github.com/howdeploy/pizdec",
+  "revision": "59eafbb90b5fede461b4a8874ffca9391aa257fc",
+  "path": "pizdec",
+  "adapted_for": "Codex on Windows",
+  "date": "2026-09-22",
+  "modified_files": [
+    "SKILL.md"
+  ],
+  "upstream_sha256": {
+    "SKILL.md": "7778019f9ad467a0c839177edfea191920edd13abdbffa7759721130c25616ab",
+    "agents/openai.yaml": "510a66d49ba3d307eca6349faca2720f29abbd7421419360c3329ac7ca35e136",
+    "references/agents-ci-supply-chain.md": "ffe5786e8ed73f11157b9a5a63e73a851cea3d7159f233037917267305e0e3fa",
+    "references/code-audit.md": "55cbb3853af8138ef7bdbf3eadb1bd30577b55bf0da557a17ecbf8384950ad32",
+    "references/containers.md": "b6ae2e14aba73d3dc13f3efd03d769f86fc746481b7edc834832b712498b8691",
+    "references/coverage.md": "500476c769f9c02afbcd3e82bd41fb43a6bc4af99d6051949e416297817ffa3c",
+    "references/host-network.md": "8e1eda67ff00ab3fd5933e22349813497345fd7201446fb6e6948999dead5e80",
+    "references/local-analyzers.md": "d4e12ea3bfbf793d6bdb595f84b25f1a16a4d2f9fd4327f73bf6533c7a67cbf1",
+    "references/web-api-data.md": "955f33908e6f6049a01d3d6e062be31ec9082dcee36694ec3c49ae2d332b6af2"
+  }
+}

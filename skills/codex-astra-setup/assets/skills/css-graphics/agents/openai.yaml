@@ -1,0 +1,4 @@
+interface:
+  display_name: "CSS Graphics"
+  short_description: "Точная HTML/CSS/SVG-графика с экспортом в PNG/JPEG"
+  default_prompt: "Используй $css-graphics, чтобы создать карточку или баннер и проверить экспорт изображения."

@@ -1,7 +1,7 @@
 interface:
   display_name: "Codex Astra Setup"
-  short_description: "Настройка Codex, Astra и рабочих предпочтений"
-  default_prompt: "Используй $codex-astra-setup для проверки и настройки Codex и GPT-6 Astra под мои задачи с сохранением существующих предпочтений и резервной копией изменений."
+  short_description: "Перенос настроек Astra и комплекта рабочих навыков"
+  default_prompt: "Используй $codex-astra-setup: восстанови весь мой комплект настроек Codex и навыков без wiki и Obsidian, сохрани резервные копии и проверь готовность."
 
 policy:
   allow_implicit_invocation: true

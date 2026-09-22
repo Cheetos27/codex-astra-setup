@@ -1,0 +1,16 @@
+{
+  "repository": "https://github.com/howdeploy/kisa-stack",
+  "revision": "63c6f6b6e1a74c040c9fffe8fcad305ce555fe55",
+  "path": "skills/voice-summary",
+  "adapted_for": "Codex on Windows",
+  "date": "2026-09-22",
+  "modified_files": [
+    "SKILL.md",
+    "agents/openai.yaml"
+  ],
+  "upstream_sha256": {
+    "MP3_WARNING.md": "bac9370ba3fa2bff320fc2dae1ca15ef42b60968accb5b9753c03dab57454338",
+    "SKILL.md": "246779710053bcd8ce2607191d7703409b04d620c1bb669562058388e2a30138",
+    "agents/openai.yaml": "e8b9de6582597c6bc3268ee8c0ad40d0fc32b3b89b828bef6b39dc778ef17c94"
+  }
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Researcher"
+  short_description: "Гибкий signal-only ресерч: quick-scan и deep-research с фолбэками."
+  default_prompt: "Используй $researcher, чтобы изучить тему, проверить источники и дать практические выводы."

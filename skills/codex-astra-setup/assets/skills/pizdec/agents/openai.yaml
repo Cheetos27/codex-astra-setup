@@ -1,0 +1,4 @@
+interface:
+  display_name: "PIZDEC Security Audit"
+  short_description: "Read-only project and infrastructure security audits"
+  default_prompt: "Use $pizdec in Triage mode to audit this authorized target read-only and report the most important evidence without changing anything."
