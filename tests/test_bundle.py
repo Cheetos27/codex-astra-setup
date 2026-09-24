@@ -92,6 +92,52 @@ class BundleTests(unittest.TestCase):
         self.assertTrue(data['plugins']['test']['enabled'])
         self.assertEqual(data['shell_environment_policy']['set']['PYTHONUTF8'], '1')
 
+    def test_selected_skills_only_and_no_external_download(self):
+        with patch.object(bundle, 'fetch_external', side_effect=AssertionError('Unexpected download')):
+            bundle.full_install(self.home / 'skills', home=self.home, apply=True,
+                                selected=['researcher', 'css-graphics'])
+        names = sorted(p.name for p in (self.home / 'skills').iterdir())
+        self.assertEqual(names, ['codex-astra-setup', 'css-graphics', 'researcher'])
+        entrypoints = list((self.home / 'skills').rglob('SKILL.md'))
+        self.assertEqual(len(entrypoints), 3)
+        preferences = (self.home / 'AGENTS.md').read_text(encoding='utf-8')
+        self.assertNotIn('Автоматическое сохранение при лимитах Codex', preferences)
+        self.assertNotIn('`voice-summary`', preferences)
+        self.assertIn('`researcher`', preferences)
+
+    def test_empty_selection_creates_no_companion_skills(self):
+        with patch.object(bundle, 'fetch_external', side_effect=AssertionError('Unexpected download')):
+            bundle.full_install(self.home / 'skills', home=self.home, apply=True, selected=[])
+        self.assertEqual([p.name for p in (self.home / 'skills').iterdir()], ['codex-astra-setup'])
+        self.assertEqual(len(list((self.home / 'skills').rglob('SKILL.md'))), 1)
+        selection = json.loads((self.home / 'astra-setup-selection.json').read_text())
+        self.assertEqual(selection['selected'], [])
+
+    def test_assisted_choices_are_pending_not_falsely_installed(self):
+        with patch.object(bundle, 'fetch_external', side_effect=AssertionError('Unexpected download')):
+            result = bundle.full_install(self.home / 'skills', home=self.home, apply=True,
+                                         selected=['graphify', 'ponytail'])
+        self.assertEqual(result['status'], 'needs_assisted_setup')
+        self.assertFalse((self.home / 'skills/graphify').exists())
+        state = json.loads((self.home / 'astra-setup-selection.json').read_text())
+        self.assertEqual(state['pending_assisted'], ['graphify', 'ponytail'])
+
+    def test_invalid_selection_fails_without_writes(self):
+        with self.assertRaises(ValueError):
+            bundle.full_install(self.home / 'skills', home=self.home, apply=True, selected=['typo'])
+        self.assertFalse(self.home.exists())
+
+    def test_unselected_existing_skill_is_preserved(self):
+        existing = self.home / 'skills/voice-summary'
+        existing.mkdir(parents=True)
+        (existing / 'SKILL.md').write_text('Personal version', encoding='utf-8')
+        bundle.full_install(self.home / 'skills', home=self.home, apply=True, selected=[])
+        self.assertEqual((existing / 'SKILL.md').read_text(), 'Personal version')
+
+    def test_main_skill_alone_has_only_one_discoverable_entrypoint(self):
+        bundle.install(self.home / 'skills', apply=True)
+        self.assertEqual(len(list((self.home / 'skills').rglob('SKILL.md'))), 1)
+
 
 if __name__ == '__main__':
     unittest.main()

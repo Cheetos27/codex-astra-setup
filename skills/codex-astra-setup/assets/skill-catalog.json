@@ -1,0 +1,11 @@
+[
+  {"id":"researcher","title":"Researcher","description":"Исследования, поиск и проверка источников.","installation":"bundled"},
+  {"id":"voice-summary","title":"Voice Summary","description":"Выжимки из аудио и расшифровок; распознавание аудио требует отдельного доступного инструмента.","installation":"bundled"},
+  {"id":"css-graphics","title":"CSS Graphics","description":"Баннеры и карточки из HTML/CSS/SVG; для экспорта нужны Node, Playwright и браузер.","installation":"bundled"},
+  {"id":"pizdec","title":"PIZDEC","description":"Аудит безопасности разрешённого проекта без изменения его файлов.","installation":"bundled"},
+  {"id":"codex-limit-guard","title":"Limit Guard","description":"Сохранение работы при низком остатке лимита; проверка внутри работы, без постоянного фонового опроса.","installation":"bundled"},
+  {"id":"zaebal","title":"Z.A.E.B.A.L.","description":"Разбор повторяющихся ошибок агента; без автоматической установки hooks.","installation":"pinned-download"},
+  {"id":"graphify","title":"Graphify","description":"Карта связей в коде и документах; отдельная программа Python и выбранный способ извлечения данных.","installation":"assisted","source":"https://github.com/Graphify-Labs/graphify","guide":"references/skill-selection.md#внешние-дополнения"},
+  {"id":"ponytail","title":"Ponytail","description":"Проверка решений на лишнюю сложность и повторное использование существующего кода.","installation":"assisted","source":"https://github.com/DietrichGebert/ponytail","guide":"references/skill-selection.md#внешние-дополнения"},
+  {"id":"vercel-agent-skills","title":"Vercel Agent Skills","description":"Коллекция навыков для React/Next.js и интерфейсов; конкретные навыки выбираются по стеку проекта.","installation":"assisted","source":"https://github.com/vercel-labs/agent-skills","guide":"references/skill-selection.md#внешние-дополнения"}
+]

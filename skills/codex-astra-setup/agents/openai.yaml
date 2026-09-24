@@ -1,7 +1,7 @@
 interface:
   display_name: "Codex Astra Setup"
-  short_description: "Перенос настроек Astra и комплекта рабочих навыков"
-  default_prompt: "Используй $codex-astra-setup: восстанови весь мой комплект настроек Codex и навыков без wiki и Obsidian, сохрани резервные копии и проверь готовность."
+  short_description: "Настройка Astra с выбором нужных рабочих навыков"
+  default_prompt: "Используй $codex-astra-setup: настрой Codex и предложи выбрать нужные навыки; wiki и Obsidian не включай, сохрани резервные копии и проверь готовность."
 
 policy:
   allow_implicit_invocation: true

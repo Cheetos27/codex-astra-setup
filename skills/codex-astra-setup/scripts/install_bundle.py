@@ -57,6 +57,9 @@ def install(skills_dir, *, apply=False, update=False, source=SOURCE, name=NAME):
         if is_link(part):
             raise ValueError(f"Destination contains a link or junction: {part}")
     source_files = inventory(source)
+    template = 'SKILL.md' not in source_files and 'SKILL.md.template' in source_files
+    if template:
+        source_files['SKILL.md'] = source_files.pop('SKILL.md.template')
     if "SKILL.md" not in source_files:
         raise ValueError("Source is missing SKILL.md")
     source_resolved, target_resolved = source.resolve(), target.resolve()
@@ -79,6 +82,8 @@ def install(skills_dir, *, apply=False, update=False, source=SOURCE, name=NAME):
     skills_dir.mkdir(parents=True, exist_ok=True)
     stage = skills_dir / f".{name}.stage-{uuid4().hex}"
     shutil.copytree(source, stage, ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '*.pyo'))
+    if template:
+        (stage / 'SKILL.md.template').rename(stage / 'SKILL.md')
     if inventory(stage) != source_files:
         raise ValueError(f"Source changed while copying; staged files retained at {stage}")
     current_files = inventory(target) if target.exists() else None
@@ -178,7 +183,22 @@ def patch_scalars(text, table, values):
     return ''.join(lines[:start]) + chunk + ''.join(lines[end:])
 
 
-def settings_plan(home, source=SOURCE, windows=None):
+def selected_preferences(profile, selected, catalog):
+    if selected is None:
+        return profile
+    sections = re.split(r'(?m)(?=^## )', profile)
+    sections = [s for s in sections if not s.startswith('## Подключённые рабочие навыки')
+                and not (s.startswith('## Автоматическое сохранение при лимитах Codex')
+                         and 'codex-limit-guard' not in selected)]
+    result = ''.join(sections).rstrip()
+    ready = [entry for entry in catalog if entry['id'] in selected and entry['installation'] != 'assisted']
+    if ready:
+        result += '\n\n## Подключённые рабочие навыки\n\n'
+        result += '\n'.join(f"- Используй `{e['id']}` по его условиям: {e['description']}" for e in ready)
+    return result + '\n'
+
+
+def settings_plan(home, source=SOURCE, windows=None, selected=None):
     home = Path(home).absolute()
     assets = source / 'assets'
     desired = json.loads((assets / 'settings.json').read_text(encoding='utf-8'))
@@ -208,6 +228,8 @@ def settings_plan(home, source=SOURCE, windows=None):
     agents = home / 'AGENTS.md'
     existing = agents.read_text(encoding='utf-8-sig') if agents.exists() else ''
     profile = (assets / 'working-preferences.md').read_text(encoding='utf-8')
+    catalog = json.loads((assets / 'skill-catalog.json').read_text(encoding='utf-8'))
+    profile = selected_preferences(profile, selected, catalog)
     plans.append(file_plan(agents, merge_preferences(existing, profile)))
     return plans
 
@@ -257,16 +279,26 @@ def fetch_external(entry, destination):
         target.write_bytes(data)
 
 
-def full_install(skills_dir, *, home, apply=False, update=False, source=SOURCE):
+def full_install(skills_dir, *, home, apply=False, update=False, source=SOURCE, selected=None):
     skills_dir, home, source = Path(skills_dir), Path(home), Path(source)
     manifest = json.loads((source / 'assets/bundle.json').read_text(encoding='utf-8'))
-    sources = [(NAME, source)] + [(name, source / 'assets/skills' / name) for name in manifest['bundled_skills']]
+    catalog = json.loads((source / 'assets/skill-catalog.json').read_text(encoding='utf-8'))
+    available = {entry['id'] for entry in catalog}
+    selected = list(dict.fromkeys(selected if selected is not None else manifest['bundled_skills'] + [e['name'] for e in manifest['external_skills']]))
+    if set(selected) - available:
+        raise ValueError('Unknown skills: ' + ', '.join(sorted(set(selected) - available)))
+    assisted = [e for e in catalog if e['id'] in selected and e['installation'] == 'assisted']
+    sources = [(NAME, source)] + [(name, source / 'assets/skills' / name) for name in manifest['bundled_skills'] if name in selected]
     # An installed setup skill may install its companion skills in the same home.
     sources = [(n, p) for n, p in sources if p.resolve() != (skills_dir / n).resolve()]
     plans = [install(skills_dir, source=p, name=n, update=update) for n, p in sources]
-    settings = settings_plan(home, source)
+    settings = settings_plan(home, source, selected=selected)
+    selection = {'schema_version': 1, 'selected': selected,
+                 'pending_assisted': [e['id'] for e in assisted]}
+    settings.append(file_plan(home / 'astra-setup-selection.json', json.dumps(selection, ensure_ascii=False, indent=2) + '\n'))
+    entries = [e for e in manifest['external_skills'] if e['name'] in selected]
     external = []
-    for entry in manifest['external_skills']:
+    for entry in entries:
         target = skills_dir / entry['name']
         if any(is_link(p) for p in (target, *target.absolute().parents)):
             raise ValueError('External skill destination contains a link')
@@ -275,11 +307,11 @@ def full_install(skills_dir, *, home, apply=False, update=False, source=SOURCE):
             raise ValueError(f"Existing {entry['name']} differs; inspect before --update")
         external.append({'name': entry['name'], 'status': 'unchanged' if old == entry['files'] else 'download-required'})
     if not apply:
-        return {'status': 'preview', 'skills': plans, 'external': external,
+        return {'status': 'preview', 'selected': selected, 'assisted_setup': assisted, 'skills': plans, 'external': external,
                 'settings': [{'path': str(p['path']), 'status': 'unchanged' if p['old'] == p['new'] else 'change'} for p in settings]}
     with tempfile.TemporaryDirectory(prefix='codex-astra-') as temporary:
         downloads = []
-        for entry, state in zip(manifest['external_skills'], external):
+        for entry, state in zip(entries, external):
             if state['status'] != 'unchanged':
                 directory = Path(temporary) / entry['name']
                 fetch_external(entry, directory)
@@ -289,7 +321,8 @@ def full_install(skills_dir, *, home, apply=False, update=False, source=SOURCE):
         for state in external:
             if state['status'] == 'download-required':
                 state['status'] = 'installed'
-    return {'status': 'applied', 'skills': results, 'external': external,
+    return {'status': 'needs_assisted_setup' if assisted else 'applied',
+            'selected': selected, 'assisted_setup': assisted, 'skills': results, 'external': external,
             'settings': result_settings, 'activation': 'Verify skill discovery in a new Codex task; plugins and account connections are separate.'}
 
 
@@ -298,19 +331,28 @@ def main():
     parser.add_argument("--skills-dir", type=Path, default=default_skills_dir())
     parser.add_argument("--apply", action="store_true", help="Write the skill after reviewing the preview")
     parser.add_argument("--update", action="store_true", help="Allow a changed existing skill; keep a backup")
-    parser.add_argument('--full', action='store_true', help='Restore all bundled skills, pinned zaebal, preferences and model settings')
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument('--full', action='store_true', help='Explicitly select the original six companion skills; excludes optional assisted integrations')
+    selection.add_argument('--select', help='Comma-separated skill IDs from --catalog; only selected skills are installed')
+    selection.add_argument('--no-skills', action='store_true', help='Apply settings without installing companion skills')
+    parser.add_argument('--catalog', action='store_true', help='Show available choices without writes or network')
     parser.add_argument('--codex-home', type=Path, help='Configuration directory (defaults to parent of --skills-dir)')
     args = parser.parse_args()
     try:
-        if args.full:
+        if args.catalog:
+            result = json.loads((SOURCE / 'assets/skill-catalog.json').read_text(encoding='utf-8'))
+        elif args.full or args.select is not None or args.no_skills:
+            chosen = None if args.full else ([] if args.no_skills else [s.strip() for s in args.select.split(',') if s.strip()])
             result = full_install(args.skills_dir, home=args.codex_home or args.skills_dir.parent,
-                                  apply=args.apply, update=args.update)
+                                  apply=args.apply, update=args.update, selected=chosen)
         else:
             result = install(args.skills_dir, apply=args.apply, update=args.update)
     except (OSError, ValueError) as error:
         print(f"Installation stopped: {error}", file=sys.stderr)
         return 1
-    print(json.dumps(result, ensure_ascii=True, indent=2))
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8')
+    print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
 
 
